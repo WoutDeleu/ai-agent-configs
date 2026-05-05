@@ -20,9 +20,11 @@ ai-agent-configs/
 │   └── langgraph/
 ├── mcp-servers/          # Model Context Protocol server definitions
 │   └── servers/
-└── prompts/              # Reusable prompt library
-    ├── system/           # System prompts
-    └── user/             # User prompt templates
+├── prompts/              # Reusable prompt library
+│   ├── system/           # System prompts
+│   └── user/             # User prompt templates
+└── workflows/            # End-to-end AI agent workflows
+    └── hexagonal-microservice/  # Hexagonal arch + DDD microservice workflow
 ```
 
 ## Usage
@@ -34,6 +36,16 @@ git clone <repo-url> ai-agent-configs
 ```
 
 Each subdirectory has its own `README.md` with usage instructions.
+
+## Workflows
+
+Workflows are end-to-end operating procedures for AI agents — combining CLAUDE.md base configs, project-specific overrides, and Claude Code skills into a complete development loop.
+
+| Workflow | Skill | Purpose |
+|----------|-------|---------|
+| [`hexagonal-microservice`](workflows/hexagonal-microservice/) | `/microservice-workflow` | Implement user stories in hexagonal + DDD microservices with approval gates |
+
+See each workflow's `README.md` for setup instructions.
 
 ## Contributing
 
