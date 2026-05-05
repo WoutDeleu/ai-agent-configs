@@ -37,13 +37,22 @@ Each subdirectory has its own `README.md` with usage instructions.
 
 **Starting a new project?** See [docs/new-project-setup.md](docs/new-project-setup.md) for a step-by-step guide on bootstrapping Claude Code in any project using configs from this repo.
 
+## Skills
+
+Skills are Claude Code slash commands. Copy them to `~/.claude/skills/` (global) or `.claude/skills/` (project-local).
+
+| Skill | Command | Purpose |
+|-------|---------|---------|
+| [`contribute`](skills/contribute.md) | `/contribute` | Contribute a new skill, workflow, config, or prompt to this repo via a gated PR workflow |
+| [`sync-ai-configs`](skills/sync-ai-configs.md) | `/sync-ai-configs` | Sync CLAUDE.md shared content to Copilot, Cursor, and Windsurf config files |
+| [`cleanup`](skills/cleanup.md) | `/cleanup` | Pre-PR cleanup: remove dead code, debug artifacts, check docs and test coverage |
+
 ## Workflows
 
 Workflows are end-to-end operating procedures for AI agents — combining CLAUDE.md base configs, project-specific overrides, and Claude Code skills into a complete development loop.
 
 | Workflow | Skill | Purpose |
 |----------|-------|---------|
-| [`hexagonal-microservice`](workflows/hexagonal-microservice/) | `/microservice-workflow` | Implement user stories in hexagonal + DDD microservices with approval gates |
 | [`java-hexagonal-microservice`](workflows/java-hexagonal-microservice/) | — | Architecture reference for new Java hexagonal microservice projects (structure, conventions, testing, tooling) |
 
 See each workflow's `README.md` for setup instructions.

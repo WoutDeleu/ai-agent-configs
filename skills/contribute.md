@@ -7,9 +7,9 @@ This repository is a centralized, reusable base for AI agent configurations. Con
 ## Stage 1 — Analyze
 
 First, identify the contribution type:
-- **Skill** — a new Claude Code slash command (`claude-code/skills/`)
+- **Skill** — a new Claude Code slash command (`skills/`)
 - **Workflow** — a multi-stage agent workflow with approval gates (`workflows/`)
-- **Config / template** — LLM API config, settings template (`llm-configs/`, `claude-code/settings/`)
+- **Config / template** — LLM API config, settings template (`llm-configs/`)
 - **MCP server** — a new MCP server definition (`mcp-servers/servers/`)
 - **Prompt** — a system or user prompt template (`prompts/`)
 - **Framework config** — agent framework template (`agent-frameworks/`)
