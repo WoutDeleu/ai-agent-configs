@@ -46,16 +46,31 @@ Skills are Claude Code slash commands. Copy them to `~/.claude/skills/` (global)
 | [`contribute`](skills/contribute.md) | `/contribute` | Contribute a new skill, workflow, config, or prompt to this repo via a gated PR workflow |
 | [`sync-ai-configs`](skills/sync-ai-configs.md) | `/sync-ai-configs` | Sync CLAUDE.md shared content to Copilot, Cursor, and Windsurf config files |
 | [`cleanup`](skills/cleanup.md) | `/cleanup` | Pre-PR cleanup: remove dead code, debug artifacts, check docs and test coverage |
+| [`microservice`](skills/microservice.md) | `/microservice` | Orchestrator for the Java hexagonal microservice flows |
+| [`user-story`](skills/user-story.md) | `/user-story` | Generate a structured GitHub issue from a feature description |
+| [`implement`](skills/implement.md) | `/implement` | Implement a user story: plan → domain analysis → docs → code → tests |
+| [`document`](skills/document.md) | `/document` | Update README and AsciiDoc docs without changing code |
+
+## Agents
+
+Specialized agents with focused roles and restricted toolsets. Copy to `.claude/agents/` (project-local) or `~/.claude/agents/` (global). See [`agents/README.md`](agents/README.md).
+
+| Agent | Role |
+|-------|------|
+| [`story-writer`](agents/story-writer.md) | Writes GitHub issues matching repo style |
+| [`planner`](agents/planner.md) | Plans implementation — read-only, no file writes |
+| [`domain-analyst`](agents/domain-analyst.md) | Checks domain model impact, proposes UML/event changes — read-only |
+| [`developer`](agents/developer.md) | Implements production code following hexagonal architecture |
+| [`test-writer`](agents/test-writer.md) | Writes tests following the project test strategy |
+| [`doc-writer`](agents/doc-writer.md) | Updates README and AsciiDoc documentation |
 
 ## Workflows
 
-Workflows are end-to-end operating procedures for AI agents — combining CLAUDE.md base configs, project-specific overrides, and Claude Code skills into a complete development loop.
+Workflows are end-to-end operating procedures for AI agents — reference docs that the skills and agents load at runtime.
 
-| Workflow | Skill | Purpose |
-|----------|-------|---------|
-| [`java-hexagonal-microservice`](workflows/java-hexagonal-microservice/) | — | Architecture reference for new Java hexagonal microservice projects (structure, conventions, testing, tooling) |
-
-See each workflow's `README.md` for setup instructions.
+| Workflow | Purpose |
+|----------|---------|
+| [`java-hexagonal-microservice`](workflows/java-hexagonal-microservice/) | Architecture, conventions, testing, tooling, and project structure reference |
 
 ## Contributing
 
