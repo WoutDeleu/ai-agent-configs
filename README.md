@@ -39,13 +39,13 @@ Each subdirectory has its own `README.md` with usage instructions.
 
 ## Skills
 
-Skills are Claude Code slash commands. Copy to `~/.claude/skills/` (global) or `.claude/skills/` (project-local).
+Skills are Claude Code slash commands. Copy them to `~/.claude/skills/` (global) or `.claude/skills/` (project-local).
 
 | Skill | Command | Purpose |
 |-------|---------|---------|
-| [`contribute`](skills/contribute.md) | `/contribute` | Contribute to this repo via a gated PR workflow |
-| [`sync-ai-configs`](skills/sync-ai-configs.md) | `/sync-ai-configs` | Sync CLAUDE.md content to Copilot, Cursor, and Windsurf config files |
-| [`cleanup`](skills/cleanup.md) | `/cleanup` | Pre-PR cleanup: dead code, debug artifacts, doc and test coverage check |
+| [`contribute`](skills/contribute.md) | `/contribute` | Contribute a new skill, workflow, config, or prompt to this repo via a gated PR workflow |
+| [`sync-ai-configs`](skills/sync-ai-configs.md) | `/sync-ai-configs` | Sync CLAUDE.md shared content to Copilot, Cursor, and Windsurf config files |
+| [`cleanup`](skills/cleanup.md) | `/cleanup` | Pre-PR cleanup: remove dead code, debug artifacts, check docs and test coverage |
 | [`microservice`](skills/microservice.md) | `/microservice` | Orchestrator for the Java hexagonal microservice flows |
 | [`user-story`](skills/user-story.md) | `/user-story` | Generate a structured GitHub issue from a feature description |
 | [`implement`](skills/implement.md) | `/implement` | Implement a user story: plan → domain analysis → docs → code → tests |

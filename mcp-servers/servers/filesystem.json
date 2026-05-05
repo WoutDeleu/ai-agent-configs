@@ -1,8 +1,0 @@
-{
-  "name": "filesystem",
-  "description": "Read/write access to local files via MCP.",
-  "transport": "stdio",
-  "command": "npx",
-  "args": ["-y", "@modelcontextprotocol/server-filesystem", "/path/to/allowed/dir"],
-  "env": {}
-}

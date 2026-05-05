@@ -1,7 +1,0 @@
-{
-  "api_key": "YOUR_ANTHROPIC_API_KEY",
-  "default_model": "claude-sonnet-4-6",
-  "max_tokens": 8096,
-  "temperature": 1,
-  "system": ""
-}
