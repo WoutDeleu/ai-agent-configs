@@ -35,6 +35,8 @@ git clone <repo-url> ai-agent-configs
 
 Each subdirectory has its own `README.md` with usage instructions.
 
+**Starting a new project?** See [docs/new-project-setup.md](docs/new-project-setup.md) for a step-by-step guide on bootstrapping Claude Code in any project using configs from this repo.
+
 ## Workflows
 
 Workflows are end-to-end operating procedures for AI agents — combining CLAUDE.md base configs, project-specific overrides, and Claude Code skills into a complete development loop.
