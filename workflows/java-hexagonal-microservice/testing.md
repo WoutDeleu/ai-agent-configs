@@ -106,34 +106,116 @@ public @interface IntegrationTest {}
 
 ## Object Mother pattern
 
-Create a Mother class for every domain object and every Kafka DTO. Mothers produce valid, fully-populated instances. Tests override only the fields relevant to the scenario.
+Create a Mother class for every domain object and every Kafka DTO. Mothers produce **valid, fully-populated instances with random values by default**. Tests override only the fields relevant to the scenario.
+
+### Why random values?
+
+Hardcoding `"0000000001"` everywhere means your tests only ever exercise that one value. Random defaults:
+- Surface bugs that only appear for certain inputs (edge lengths, character sets, boundary values).
+- Prevent tests from accidentally passing because they share the same hardcoded constant.
+- Make it obvious when a test is asserting on a specific value vs. just needing *any* valid value.
+
+If a test fails on a random value, log the seed or the generated value so it can be reproduced.
+
+### Random value utilities
 
 ```java
-// core/item/domain/ItemNrMother.java
-public class ItemNrMother {
-    public static ItemNr valid() { return ItemNr.of("0000000001"); }
-    public static ItemNr another() { return ItemNr.of("0000000002"); }
-}
+// infrastructure/util/RandomTestValues.java (test source)
+public final class RandomTestValues {
+    private static final ThreadLocalRandom RNG = ThreadLocalRandom.current();
 
-// core/item/domain/ItemMother.java
-public class ItemMother {
-    public static Item withOneLocation() {
-        return new Item(
-            ItemNrMother.valid(),
-            List.of(ReplenishmentLocationMother.vending())
-        );
+    public static String digits(int length) {
+        return RNG.ints(length, 0, 10)
+            .mapToObj(Integer::toString)
+            .collect(Collectors.joining());
     }
 
-    public static Item withNoLocations() {
-        return new Item(ItemNrMother.valid(), List.of());
+    public static int positiveInt(int max) { return RNG.nextInt(1, max + 1); }
+    public static int positiveInt() { return positiveInt(1000); }
+
+    public static BigDecimal positiveBigDecimal() {
+        return BigDecimal.valueOf(RNG.nextDouble(0.01, 9999.99))
+            .setScale(2, RoundingMode.HALF_UP);
+    }
+
+    public static String uuid() { return UUID.randomUUID().toString(); }
+
+    public static <T> T oneOf(T... values) {
+        return values[RNG.nextInt(values.length)];
     }
 }
 ```
 
-Rules:
+### Mother examples
+
+```java
+// core/item/domain/ItemNrMother.java
+public class ItemNrMother {
+    // Default: random valid ItemNr — use this when the specific value doesn't matter
+    public static ItemNr random() {
+        return ItemNr.of(RandomTestValues.digits(10));
+    }
+
+    // Named scenarios: use these when the specific value matters to the test
+    public static ItemNr known() { return ItemNr.of("0000000001"); }
+}
+
+// core/stockmovement/domain/QuantityMother.java
+public class QuantityMother {
+    public static Quantity random()       { return new Quantity(RandomTestValues.positiveInt()); }
+    public static Quantity zero()         { return new Quantity(0); }
+    public static Quantity large()        { return new Quantity(Integer.MAX_VALUE); }
+    public static Quantity of(int value)  { return new Quantity(value); }
+}
+
+// core/item/domain/ItemMother.java
+public class ItemMother {
+    // Default: fully random, fully valid — use for tests where item content is irrelevant
+    public static Item random() {
+        return new Item(ItemNrMother.random(), List.of(ReplenishmentLocationMother.random()));
+    }
+
+    // Named scenarios: use when the specific shape matters
+    public static Item withOneLocation() {
+        return new Item(ItemNrMother.random(), List.of(ReplenishmentLocationMother.random()));
+    }
+
+    public static Item withNoLocations() {
+        return new Item(ItemNrMother.random(), List.of());
+    }
+
+    public static Item withLocations(int count) {
+        var locations = IntStream.range(0, count)
+            .mapToObj(_ -> ReplenishmentLocationMother.random())
+            .toList();
+        return new Item(ItemNrMother.random(), locations);
+    }
+}
+
+// adapters/maximo/onboarding/entity/ItemKafkaEntityMother.java
+public class ItemKafkaEntityMother {
+    public static ItemKafkaEntity random() {
+        return new ItemKafkaEntity(
+            RandomTestValues.digits(10),   // itemNumber
+            RandomTestValues.uuid(),        // transactionId
+            RandomTestValues.oneOf("ACTIVE", "PLANNING", "ABSOLUTE")
+        );
+    }
+
+    public static ItemKafkaEntity withStatus(String status) {
+        var base = random();
+        base.setStatus(status);
+        return base;
+    }
+}
+```
+
+### Rules
+
+- **Default factory method is always `random()`**, not `valid()` or `default()`. If a test needs a specific value, use a named method that makes the intent explicit.
 - One Mother class per domain concept.
-- All factory methods return valid instances by default.
-- Name factory methods after the scenario, not the fields: `withOneLocation()` not `withReplenishmentLocations(List.of(...))`.
+- Named scenario methods describe the scenario, not the fields: `withNoLocations()` not `withReplenishmentLocations(List.of())`.
+- Only use fixed values when the test explicitly asserts on that value — otherwise, use `random()`.
 - Mothers live in the same package as the class they build, in the test source tree.
 
 ---
@@ -179,40 +261,115 @@ Compose extensions in the custom meta-annotations so tests declare intent, not i
 
 ---
 
-## Integration test structure
+## Integration tests
+
+### Philosophy: no mocks, real infrastructure
+
+Integration tests must mirror production as closely as possible. The goal is high confidence that a passing test means working software — not just working test doubles.
+
+**Default rule: if real infrastructure can run in a container, use it. Do not mock it.**
+
+| Concern | Approach |
+|---------|----------|
+| Database | Testcontainers — same DB engine as production (PostgreSQL, Oracle). Never H2. |
+| Kafka | Testcontainers Kafka (or embedded Kafka for speed). Real broker, real topics, real partitions. |
+| Schema Registry | Testcontainers or Apicurio in-memory — real schema validation. |
+| Internal services (same repo/bounded context) | No mocks — let them run. |
+| External HTTP services (partner systems, third-party APIs) | WireMock — acceptable exception (see below). Configure to replay realistic response shapes and latency. |
+| Clock / time | Use the real system clock. Do not mock `Clock` unless the test is specifically about time-dependent behavior. |
+| Transactions | Real transaction manager, real commit/rollback. Never mock `@Transactional`. |
+
+**Acceptable exceptions — when a mock or stub is justified:**
+
+- **External HTTP services you do not own**: use WireMock, but configure it with real response shapes captured from the actual service. Verify that the expected requests were made. Never use `any()` matchers for requests in WireMock stubs — match real fields.
+- **Services that are prohibitively expensive or impossible to containerize**: document why mocking was necessary with a comment and a ticket to revisit.
+
+**Never acceptable in integration tests:**
+
+- Mocking the repository layer — defeats the purpose of testing persistence.
+- Mocking Kafka producers or consumers — defeats the purpose of testing the messaging path.
+- Using `@MockBean` for anything that has a real Testcontainer-backed implementation.
+- Hardcoding sleep durations — use Awaitility.
+
+### Structure
 
 ```java
 @IntegrationTest
 class ItemOnboardingIntegrationTest {
 
-    @Autowired MaximoItemTestProducer producer;   // publishes test messages to Kafka
-    @Autowired KafkaS4mTestConsumer consumer;     // reads messages from S4M Kafka
-    @Autowired SpringDataItemRepository repo;     // checks DB state directly
+    @Autowired MaximoItemTestProducer producer;   // sends real Kafka messages to the test broker
+    @Autowired KafkaS4mTestConsumer consumer;     // receives real Kafka messages from the test broker
+    @Autowired SpringDataItemRepository repo;     // queries the real Testcontainers DB
+    @Autowired WireMockServer wireMock;           // stubs external HTTP partner (if any)
 
     @Test
-    void should_publish_catalog_event_to_s4m_when_item_is_upserted() {
-        // Arrange
-        var payload = ItemKafkaEntityMother.validItem();
+    void should_persist_item_and_publish_catalog_event_when_item_is_upserted() {
+        var payload = ItemKafkaEntityMother.random();  // random by default
 
-        // Act
         producer.sendItemUpserted(payload);
 
-        // Assert — wait for async processing
+        // Assert Kafka output — real broker, real consumer
         await().atMost(10, SECONDS).untilAsserted(() -> {
             var events = consumer.pollCatalogTopic();
             assertThat(events).hasSize(1);
             assertThat(events.get(0).getItemNr()).isEqualTo(payload.getItemNumber());
         });
 
+        // Assert DB state — real database, no mocks
         var savedItem = repo.findByItemNr(payload.getItemNumber());
         assertThat(savedItem).isPresent();
+        assertThat(savedItem.get().status()).isEqualTo(Status.of(payload.getStatus()));
+    }
+
+    @Test
+    void should_write_to_dead_letter_table_when_message_is_malformed() {
+        // Publish a message that will fail deserialization or validation
+        producer.sendRaw(Topics.MAXIMO_ITEM_BRIDGE, "bad-key", "{not valid json}");
+
+        // Assert the DLT entry — real DB, no mocks
+        await().atMost(10, SECONDS).untilAsserted(() -> {
+            var dltEntries = dltRepo.findAll();
+            assertThat(dltEntries).hasSize(1);
+            assertThat(dltEntries.get(0).source()).isEqualTo(MessageSource.MAXIMO);
+        });
+
+        // Assert no catalog event was published
+        await().during(2, SECONDS).atMost(3, SECONDS).untilAsserted(() ->
+            assertThat(consumer.pollCatalogTopic()).isEmpty()
+        );
     }
 }
 ```
 
-Every integration test covers:
-1. **Happy path** — drive through an inbound adapter, assert DB state and outbound Kafka events.
-2. **Failure path** — malformed message, missing entity, downstream error — assert DLT entry or error response.
+### WireMock for external HTTP — do it realistically
+
+When an external HTTP service must be stubbed:
+
+```java
+// Capture real response shapes — don't invent them
+wireMock.stubFor(
+    post(urlEqualTo("/inventory/reserve"))
+        .withRequestBody(matchingJsonPath("$.itemNr"))      // match real fields, not any()
+        .withRequestBody(matchingJsonPath("$.quantity"))
+        .willReturn(aResponse()
+            .withStatus(200)
+            .withHeader("Content-Type", "application/json")
+            .withBodyFile("wiremock/inventory-reserve-response.json")  // real shape, from actual service
+            .withFixedDelay(50))   // realistic latency
+);
+
+// After the test — verify the call was actually made
+wireMock.verify(postRequestedFor(urlEqualTo("/inventory/reserve"))
+    .withRequestBody(matchingJsonPath("$.itemNr", equalTo(payload.getItemNumber()))));
+```
+
+Store WireMock response bodies in `src/test/resources/__files/wiremock/`. Use real response shapes captured from the actual partner service.
+
+### What every integration test must cover
+
+1. **Happy path** — drive a realistic payload through the full stack (inbound adapter → use case → outbound adapter). Assert DB state, produced Kafka messages, and any external HTTP calls made.
+2. **Failure / error path** — malformed input, missing precondition, or downstream error. Assert that the system degrades correctly: DLT entry written, offset committed, no partial state left in the DB.
+3. **Idempotency** (where applicable) — publish the same message twice. Assert the outcome is the same as publishing once.
 
 ---
 
