@@ -1,0 +1,23 @@
+# Secrets — always use .example files instead
+*.secret
+*.key
+.env
+.env.*
+!.env.example
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+*.swp
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Node
+node_modules/
