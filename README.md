@@ -42,6 +42,7 @@ Workflows are end-to-end operating procedures for AI agents — combining CLAUDE
 | Workflow | Skill | Purpose |
 |----------|-------|---------|
 | [`hexagonal-microservice`](workflows/hexagonal-microservice/) | `/microservice-workflow` | Implement user stories in hexagonal + DDD microservices with approval gates |
+| [`java-hexagonal-microservice`](workflows/java-hexagonal-microservice/) | — | Architecture reference for new Java hexagonal microservice projects (structure, conventions, testing, tooling) |
 
 See each workflow's `README.md` for setup instructions.
 
