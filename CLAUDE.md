@@ -1,23 +1,66 @@
 # CLAUDE.md
 
-This repository stores base configurations for AI agents and LLM tooling.
+This repository is a centralized, version-controlled base for AI agent configurations.
+It is populated by AI agents using the `/contribute` skill and reviewed by a human before merging.
 
 ## Purpose
 
-Centralized, version-controlled configs for:
+Reusable configs for:
 - Claude Code (settings, hooks, skills)
-- LLM API parameters and system prompts
-- Agent frameworks (LangChain, CrewAI, LangGraph)
+- LLM API parameters and model references
+- Agent frameworks (LangGraph)
 - MCP server definitions
+- Prompts and workflow templates
+
+## Contribution workflow
+
+All changes to this repo go through the `/contribute` skill:
+
+1. User describes what they want (new skill, config, workflow, prompt, MCP server, etc.)
+2. Agent analyzes validity and fit → **GATE-1**
+3. Agent proposes an implementation plan → **GATE-2**
+4. Agent implements on a feature branch
+5. Agent runs a critical self-review and fixes any issues
+6. Agent opens a PR via `gh pr create`
+7. User reviews and merges on GitHub
+
+Never commit directly to `main`. Always use a feature branch.
 
 ## Conventions
 
-- Config files that contain secrets use an `.example` suffix — never commit real credentials.
-- Each top-level directory has its own `README.md` explaining its contents.
-- Prompts are written in Markdown; wrap variable placeholders in `{{double_braces}}`.
+| Rule | Detail |
+|------|--------|
+| Secrets | Never commit real credentials. Files with secrets use `.example` suffix. |
+| Placeholders | Variable values in templates use `{{double_brace}}` syntax. |
+| Documentation | Every new directory gets a `README.md`. New items in existing directories are documented in the parent `README.md`. |
+| Branch names | `feat/<type>/<name>` — e.g. `feat/skill/langgraph-debug`, `feat/mcp/postgres` |
+| Commit style | `<type>(<scope>): <description>` — e.g. `feat(skills): add langgraph debugging skill` |
+| Reusability | All content must be generic. No hardcoded project names, paths, or team-specific values. |
 
-## Common tasks
+## Repo structure
 
-- **Add a new skill**: drop a `.md` file into `claude-code/skills/` following the existing skill format.
-- **Add an MCP server**: add a JSON definition to `mcp-servers/servers/` and update `mcp-servers/README.md`.
-- **Add a system prompt**: place it in `prompts/system/` with a descriptive filename.
+```
+ai-agent-configs/
+├── claude-code/
+│   ├── settings/         # settings.json templates
+│   ├── hooks/            # Hook scripts
+│   └── skills/           # Claude Code slash command skills
+├── llm-configs/
+│   ├── claude/           # Anthropic Claude configs and model reference
+│   ├── openai/
+│   └── gemini/
+├── agent-frameworks/
+│   └── langgraph/        # LangGraph config templates
+├── mcp-servers/
+│   └── servers/          # MCP server definitions (.json)
+├── prompts/
+│   ├── system/           # System prompts
+│   └── user/             # User prompt templates
+└── workflows/
+    └── hexagonal-microservice/  # Hexagonal arch + DDD microservice workflow
+```
+
+## GitHub
+
+Remote: https://github.com/WoutDeleu/ai-agent-configs
+PRs are created with `gh pr create`. The user does a final review on GitHub before merging.
