@@ -1,25 +1,26 @@
 # Agents
 
-Specialized Claude Code agents. Each agent has a focused role, a restricted toolset, and a system prompt that enforces its boundaries.
+Agents are project-specific. They are not stored here as ready-to-use files because they contain paths, package names, tooling commands, and bounded context names that differ for every project.
 
-Copy agents to `.claude/agents/` in your project (project-local) or `~/.claude/agents/` (global).
+## How to get agents for your project
 
-## Java hexagonal microservice agents
+Each workflow provides a set of agent templates tailored to its architecture. Find the one that matches your project type:
 
-These agents work together as part of the `/microservice`, `/user-story`, `/implement`, and `/document` flows.
+| Workflow | Agent templates |
+|----------|----------------|
+| [Java hexagonal microservice](../workflows/java-hexagonal-microservice/agents/) | planner, domain-analyst, developer, test-writer, doc-writer, story-writer |
 
-| Agent | Role | Tools |
-|-------|------|-------|
-| [`story-writer`](story-writer.md) | Generates GitHub issues matching the repo's style | Bash, Read |
-| [`planner`](planner.md) | Proposes implementation plans — read-only, no file writes | Bash, Read |
-| [`domain-analyst`](domain-analyst.md) | Checks domain model impact and proposes UML/event flow changes — read-only | Bash, Read |
-| [`developer`](developer.md) | Implements production code following hexagonal architecture | Bash, Read, Write, Edit |
-| [`test-writer`](test-writer.md) | Writes tests following the project's test strategy | Bash, Read, Write, Edit |
-| [`doc-writer`](doc-writer.md) | Updates README and AsciiDoc documentation | Bash, Read, Write, Edit |
-
-## Installation
+## How to use the templates
 
 ```bash
-# Project-local (recommended — keeps agents scoped to the microservice)
-cp /path/to/ai-agent-configs/agents/*.md .claude/agents/
+# 1. Copy the agent templates for your workflow into your project
+cp workflows/java-hexagonal-microservice/agents/*.md /your-project/.claude/agents/
+
+# 2. Open each file and replace every {{placeholder}} with your project's values
+#    See the workflow's agents/README.md for the full placeholder reference
+
+# 3. Verify no placeholder remains before using the agents
+grep -r "{{" /your-project/.claude/agents/
 ```
+
+Agents live in `.claude/agents/` inside each project — not globally. This keeps them scoped to the project they were configured for.

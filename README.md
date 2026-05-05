@@ -53,16 +53,7 @@ Skills are Claude Code slash commands. Copy them to `~/.claude/skills/` (global)
 
 ## Agents
 
-Specialized agents with focused roles and restricted toolsets. Copy to `.claude/agents/` (project-local) or `~/.claude/agents/` (global). See [`agents/README.md`](agents/README.md).
-
-| Agent | Role |
-|-------|------|
-| [`story-writer`](agents/story-writer.md) | Writes GitHub issues matching repo style |
-| [`planner`](agents/planner.md) | Plans implementation — read-only, no file writes |
-| [`domain-analyst`](agents/domain-analyst.md) | Checks domain model impact, proposes UML/event changes — read-only |
-| [`developer`](agents/developer.md) | Implements production code following hexagonal architecture |
-| [`test-writer`](agents/test-writer.md) | Writes tests following the project test strategy |
-| [`doc-writer`](agents/doc-writer.md) | Updates README and AsciiDoc documentation |
+Agents are project-specific — they contain package names, file paths, and tooling commands that differ per project. They live as templates inside each workflow and must be customized before use. See [`agents/README.md`](agents/README.md).
 
 ## Workflows
 
