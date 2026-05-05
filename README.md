@@ -15,8 +15,6 @@ ai-agent-configs/
 │   ├── openai/           # OpenAI
 │   └── gemini/           # Google Gemini
 ├── agent-frameworks/     # Agent orchestration framework configs
-│   ├── langchain/
-│   ├── crewai/
 │   └── langgraph/
 ├── mcp-servers/          # Model Context Protocol server definitions
 │   └── servers/
