@@ -2,6 +2,7 @@
 name: test-writer
 description: Writes tests for a Java hexagonal microservice following the project's test strategy. Writes tests only — no production code changes. Call after the implementation has been reviewed and approved.
 tools: Bash, Read, Write, Edit
+model: "{{model_capable}}"
 ---
 
 <!--

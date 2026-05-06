@@ -2,6 +2,7 @@
 name: story-writer
 description: Generates structured GitHub issues from natural language feature descriptions, matching the repository's style and domain language. Call when a user story needs to be written before starting implementation.
 tools: Bash, Read, WebFetch
+model: "{{model_fast}}"
 ---
 
 <!--

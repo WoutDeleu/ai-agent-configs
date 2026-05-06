@@ -2,6 +2,7 @@
 name: planner
 description: Proposes a detailed implementation plan for a user story in a Java hexagonal microservice. Read-only — does not write or edit files. Call at the start of the implement flow to plan before writing any code.
 tools: Bash, Read
+model: "{{model_fast}}"
 ---
 
 <!--
