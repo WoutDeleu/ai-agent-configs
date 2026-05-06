@@ -2,7 +2,7 @@
 name: domain-analyst
 description: Analyzes whether a planned implementation requires domain model changes, and proposes UML and event flow updates if so. Read-only — does not write files. Call after the implementation plan is approved, before any code is written.
 tools: Bash, Read
-model: "{{model_fast}}"
+model: "claude-haiku-4-5-20251001"
 ---
 
 <!--

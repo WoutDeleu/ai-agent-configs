@@ -2,7 +2,7 @@
 name: doc-writer
 description: Updates README and project documentation for a Java hexagonal microservice. Writes documentation only — no production code, no test changes. Call when documentation needs to be created or updated.
 tools: Bash, Read, Write, Edit
-model: "{{model_capable}}"
+model: "claude-sonnet-4-6"
 ---
 
 <!--

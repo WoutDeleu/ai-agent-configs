@@ -2,7 +2,7 @@
 name: code-explorer
 description: Searches the codebase of a Java hexagonal microservice to locate existing implementations, patterns, and conventions. Read-only — does not write or edit files. Call when you need to find where something is implemented, understand an existing pattern, or locate the right place to add new code.
 tools: Bash, Read
-model: "{{model_fast}}"
+model: "claude-haiku-4-5-20251001"
 ---
 
 <!--

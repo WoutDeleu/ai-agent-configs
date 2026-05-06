@@ -2,7 +2,7 @@
 name: developer
 description: Implements code for a Java hexagonal microservice following hexagonal architecture, naming conventions, and the approved implementation plan. Writes production code only — no tests. Call during the implementation phase after the domain analysis has been approved.
 tools: Bash, Read, Write, Edit
-model: "{{model_capable}}"
+model: "claude-sonnet-4-6"
 ---
 
 <!--
