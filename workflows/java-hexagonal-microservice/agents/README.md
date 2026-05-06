@@ -33,6 +33,7 @@ grep -r "{{" /your-project/.claude/agents/
 
 | Agent | Role | Writes files? | Model |
 |-------|------|---------------|-------|
+| [`orchestrator`](orchestrator.md) | Coordinates the full implementation workflow, enforces gates, spawns specialized agents | No | `claude-sonnet-4-6` |
 | [`planner`](planner.md) | Proposes implementation plan — read-only | No | `claude-haiku-4-5-20251001` |
 | [`domain-analyst`](domain-analyst.md) | Checks domain model impact, proposes diagram changes — read-only | No | `claude-haiku-4-5-20251001` |
 | [`code-explorer`](code-explorer.md) | Searches and locates existing code, patterns, and conventions — read-only | No | `claude-haiku-4-5-20251001` |
@@ -41,4 +42,4 @@ grep -r "{{" /your-project/.claude/agents/
 | [`test-writer`](test-writer.md) | Writes tests following the project test strategy | Yes | `claude-sonnet-4-6` |
 | [`doc-writer`](doc-writer.md) | Updates README and project documentation | Yes | `claude-sonnet-4-6` |
 
-These agents work together as part of the `/microservice`, `/implement`, `/user-story`, and `/document` skill flows.
+The `orchestrator` agent coordinates the others end-to-end. Specialized agents can also be invoked directly as part of the `/microservice`, `/implement`, `/user-story`, and `/document` skill flows.
