@@ -35,6 +35,7 @@ grep -r "{{" /your-project/.claude/agents/
 |-------|------|---------------|
 | [`planner`](planner.md) | Proposes implementation plan — read-only | No |
 | [`domain-analyst`](domain-analyst.md) | Checks domain model impact, proposes diagram changes — read-only | No |
+| [`code-explorer`](code-explorer.md) | Searches and locates existing code, patterns, and conventions — read-only | No |
 | [`developer`](developer.md) | Implements production code following hexagonal architecture | Yes |
 | [`test-writer`](test-writer.md) | Writes tests following the project test strategy | Yes |
 | [`doc-writer`](doc-writer.md) | Updates README and project documentation | Yes |
