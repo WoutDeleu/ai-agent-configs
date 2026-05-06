@@ -31,14 +31,14 @@ grep -r "{{" /your-project/.claude/agents/
 
 ## Agents
 
-| Agent | Role | Writes files? |
-|-------|------|---------------|
-| [`planner`](planner.md) | Proposes implementation plan — read-only | No |
-| [`domain-analyst`](domain-analyst.md) | Checks domain model impact, proposes diagram changes — read-only | No |
-| [`code-explorer`](code-explorer.md) | Searches and locates existing code, patterns, and conventions — read-only | No |
-| [`developer`](developer.md) | Implements production code following hexagonal architecture | Yes |
-| [`test-writer`](test-writer.md) | Writes tests following the project test strategy | Yes |
-| [`doc-writer`](doc-writer.md) | Updates README and project documentation | Yes |
-| [`story-writer`](story-writer.md) | Generates structured GitHub issues | No |
+| Agent | Role | Writes files? | Model |
+|-------|------|---------------|-------|
+| [`planner`](planner.md) | Proposes implementation plan — read-only | No | `claude-haiku-4-5-20251001` |
+| [`domain-analyst`](domain-analyst.md) | Checks domain model impact, proposes diagram changes — read-only | No | `claude-haiku-4-5-20251001` |
+| [`code-explorer`](code-explorer.md) | Searches and locates existing code, patterns, and conventions — read-only | No | `claude-haiku-4-5-20251001` |
+| [`story-writer`](story-writer.md) | Generates structured GitHub issues | No | `claude-haiku-4-5-20251001` |
+| [`developer`](developer.md) | Implements production code following hexagonal architecture | Yes | `claude-sonnet-4-6` |
+| [`test-writer`](test-writer.md) | Writes tests following the project test strategy | Yes | `claude-sonnet-4-6` |
+| [`doc-writer`](doc-writer.md) | Updates README and project documentation | Yes | `claude-sonnet-4-6` |
 
 These agents work together as part of the `/microservice`, `/implement`, `/user-story`, and `/document` skill flows.
